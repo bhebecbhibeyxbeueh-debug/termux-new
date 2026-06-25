@@ -55,22 +55,35 @@ tar -xf scripts.tar.gz
 rm -rf scripts.tar.gz
 
 cd $HOME/termux-box/
-wget -N https://github.com/olegos2/termux-box/raw/main/scripts/termux-box &>/dev/null
+echo "Baixando a interface (UI) mais recente..."
+wget -N "https://github.com/${YOUR_GITHUB}/raw/${UI_BRANCH}/scripts/termux-box" &>/dev/null
 chmod +x termux-box
 mv termux-box $PREFIX/bin/
-wget -N https://github.com/olegos2/termux-box/raw/main/scripts/start-proot.sh &>/dev/null
-wget -N https://github.com/olegos2/termux-box/raw/main/scripts/start-chroot.sh &>/dev/null
+
+# Atualiza também os scripts de inicialização internos do menu
+wget -N "https://github.com/${YOUR_GITHUB}/raw/${UI_BRANCH}/scripts/start-proot.sh" &>/dev/null
+wget -N "https://github.com/${YOUR_GITHUB}/raw/${UI_BRANCH}/scripts/start-chroot.sh" &>/dev/null
 chmod +x start-proot.sh
 chmod +x start-chroot.sh
 
-echo "Installing patch"
+echo "Instalando Patch e DXVK 1.5.5..."
 
 cd $HOME/termux-box/ubuntu-fs
-wget -q --show-progress https://github.com/olegos2/termux-box/releases/download/0.0.1-alpha/patch.tar.xz
+# Remove os drivers antigos
 rm -rf opt/d3d
 rm -rf opt/mesa
-tar -xf patch.tar.xz
-rm -rf patch.tar.xz
+
+# Baixa o patch atualizado do seu repositório
+wget -q --show-progress "https://github.com/${YOUR_GITHUB}/releases/download/v1.0/patch_atualizado.tar.xz"
+tar -xf patch_atualizado.tar.xz
+rm -rf patch_atualizado.tar.xz
+
+# Baixa e instala o DXVK 1.5.5 na pasta do Wine (geralmente em opt/d3d ou nas dlls do wine)
+echo "Configurando DXVK 1.5.5..."
+wget -q --show-progress "https://github.com/${YOUR_GITHUB}/raw/${UI_BRANCH}/components/dxvk-1.5.5.tar.gz"
+tar -xf dxvk-1.5.5.tar.gz -C opt/d3d/
+rm -rf dxvk-1.5.5.tar.gz
+
 cd
 
 echo "Starting termux-box now. Next time use \"termux-box\" command to run it."
